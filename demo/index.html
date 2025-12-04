@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>socklog Demo</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #fff;
+        color: #333;
+        min-height: 100vh;
+        padding: 24px;
+      }
+
+      h1 {
+        margin-bottom: 16px;
+        font-weight: 500;
+      }
+
+      .demo-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .log-panel {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 500px;
+      }
+
+      socklog-viewer {
+        flex: 1;
+        min-height: 0;
+      }
+
+      .info-text {
+        margin-top: 24px;
+        padding: 16px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      code {
+        background: #e9ecef;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: 'Monaco', 'Menlo', monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-container">
+      <h1>socklog Demo</h1>
+
+      <div class="log-panel">
+        <socklog-controls id="controls"></socklog-controls>
+        <socklog-viewer id="viewer" url="ws://localhost:8080"></socklog-viewer>
+      </div>
+
+      <div class="info-text">
+        <p>
+          <strong>Setup:</strong> Run <code>pnpm dev:server</code> in another terminal to start the
+          WebSocket server, then messages will stream in automatically.
+        </p>
+      </div>
+    </div>
+
+    <script type="module">
+      import '../src/index.ts'
+
+      const viewer = document.getElementById('viewer')
+      const controls = document.getElementById('controls')
+
+      // Connect controls to viewer's store
+      controls.store = viewer.getStore()
+    </script>
+  </body>
+</html>
