@@ -33,18 +33,10 @@
         border: 1px solid #e0e0e0;
         border-radius: 8px;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        height: 500px;
-      }
-
-      socklog-viewer {
-        flex: 1;
-        min-height: 0;
       }
 
       .info-text {
-        margin-top: 24px;
+        margin-bottom: 24px;
         padding: 16px;
         background: #f8f9fa;
         border-radius: 8px;
@@ -64,16 +56,16 @@
     <div class="demo-container">
       <h1>socklog Demo</h1>
 
-      <div class="log-panel">
-        <socklog-controls id="controls"></socklog-controls>
-        <socklog-viewer id="viewer" url="ws://localhost:8080"></socklog-viewer>
-      </div>
-
       <div class="info-text">
         <p>
           <strong>Setup:</strong> Run <code>pnpm dev:server</code> in another terminal to start the
           WebSocket server, then messages will stream in automatically.
         </p>
+      </div>
+
+      <div class="log-panel">
+        <socklog-controls id="controls"></socklog-controls>
+        <socklog-viewer id="viewer" url="ws://localhost:8080"></socklog-viewer>
       </div>
     </div>
 

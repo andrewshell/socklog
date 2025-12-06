@@ -1,6 +1,5 @@
 import { LitElement, html, css } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
-import '@lit-labs/virtualizer'
 import type { LogEntry, ConnectionStatus } from '../core/types'
 import { WebSocketClient } from '../core/websocket-client'
 import { LogStore } from '../core/log-store'
@@ -15,22 +14,10 @@ export class SocklogViewer extends LitElement {
       background: var(--socklog-bg, inherit);
       color: var(--socklog-color, inherit);
       border-radius: var(--socklog-border-radius, 0);
-      overflow: hidden;
-      height: 100%;
-      width: 100%;
     }
 
-    lit-virtualizer {
-      height: 100%;
-      width: 100%;
+    .log-container {
       padding: var(--socklog-padding, 8px);
-      display: block;
-      box-sizing: border-box;
-    }
-
-    lit-virtualizer > .log-entry {
-      width: calc(100% - var(--socklog-padding, 8px)) !important;
-      contain: content;
     }
 
     .log-entry {
@@ -50,10 +37,7 @@ export class SocklogViewer extends LitElement {
     }
 
     .empty-state {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
+      padding: var(--socklog-padding, 8px);
       color: var(--socklog-muted-color, #999);
     }
   `
@@ -159,16 +143,16 @@ export class SocklogViewer extends LitElement {
     }
 
     return html`
-      <lit-virtualizer
-        scroller
-        .items=${this.logs}
-        .renderItem=${(entry: LogEntry) => html`
-          <div class="log-entry">
-            <div class="timestamp">${this.formatTimestamp(entry.timestamp)}</div>
-            <div class="json">${this.formatJson(entry.data)}</div>
-          </div>
-        `}
-      ></lit-virtualizer>
+      <div class="log-container">
+        ${this.logs.map(
+          (entry) => html`
+            <div class="log-entry">
+              <div class="timestamp">${this.formatTimestamp(entry.timestamp)}</div>
+              <div class="json">${this.formatJson(entry.data)}</div>
+            </div>
+          `
+        )}
+      </div>
     `
   }
 }

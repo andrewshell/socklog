@@ -1,6 +1,6 @@
 {
   "name": "@andrewshell/socklog",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "WebSocket-based logging web components using Lit",
   "type": "module",
   "main": "./dist/socklog.cjs",
@@ -47,7 +47,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@lit-labs/virtualizer": "^2.1.1",
     "lit": "^3.2.1"
   },
   "devDependencies": {
