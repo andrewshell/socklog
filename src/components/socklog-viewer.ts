@@ -54,12 +54,19 @@ export class SocklogViewer extends LitElement {
 
     .json {
       white-space: pre-wrap;
-      word-break: break-word;
     }
 
     .empty-state {
       padding: var(--socklog-padding, 8px);
       color: var(--socklog-muted-color, #999);
+    }
+
+    .json-key,
+    .json-string,
+    .json-value,
+    .json-punct {
+      display: inline;
+      white-space: nowrap;
     }
 
     .json-key {
@@ -168,6 +175,66 @@ export class SocklogViewer extends LitElement {
     })
   }
 
+  private tokenizeJson(json: string): Array<{ type: string; value: string }> {
+    const tokens: Array<{ type: string; value: string }> = []
+    let i = 0
+
+    while (i < json.length) {
+      const char = json[i]
+
+      // Whitespace
+      if (/\s/.test(char)) {
+        let value = ''
+        while (i < json.length && /\s/.test(json[i])) {
+          value += json[i]
+          i++
+        }
+        tokens.push({ type: 'whitespace', value })
+        continue
+      }
+
+      // Structural characters
+      if (char === '{' || char === '}' || char === '[' || char === ']' || char === ':' || char === ',') {
+        tokens.push({ type: 'punctuation', value: char })
+        i++
+        continue
+      }
+
+      // String
+      if (char === '"') {
+        let value = '"'
+        i++
+        while (i < json.length) {
+          if (json[i] === '\\' && i + 1 < json.length) {
+            value += json[i] + json[i + 1]
+            i += 2
+          } else if (json[i] === '"') {
+            value += '"'
+            i++
+            break
+          } else {
+            value += json[i]
+            i++
+          }
+        }
+        tokens.push({ type: 'string', value })
+        continue
+      }
+
+      // Number, boolean, null
+      let value = ''
+      while (i < json.length && !/[\s{}\[\]:,"]/.test(json[i])) {
+        value += json[i]
+        i++
+      }
+      if (value) {
+        tokens.push({ type: 'value', value })
+      }
+    }
+
+    return tokens
+  }
+
   private formatJson(data: unknown, expanded = false) {
     let jsonStr: string
     if (typeof data === 'string') {
@@ -176,37 +243,53 @@ export class SocklogViewer extends LitElement {
       jsonStr = expanded ? JSON.stringify(data, null, this.indent) : JSON.stringify(data)
     }
 
-    // Escape HTML entities first
-    const escaped = jsonStr
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
+    const tokens = this.tokenizeJson(jsonStr)
+    const parts: string[] = []
 
-    // Color JSON keys: match "key": pattern
-    const withKeys = escaped.replace(
-      /(&quot;|")([^"\\]|\\.)*?\1(?=\s*:)/g,
-      '<span class="json-key">$&</span>'
-    )
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i]
+      const nextToken = tokens[i + 1]
 
-    // Highlight search terms if present
-    if (!this.searchTerm) {
-      return unsafeHTML(withKeys)
+      // Escape HTML entities
+      const escaped = token.value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+
+      // Check if this string is a key (followed by colon)
+      const isKey = token.type === 'string' && nextToken?.value === ':'
+
+      if (token.type === 'whitespace') {
+        parts.push(escaped)
+      } else if (token.type === 'punctuation') {
+        parts.push(`<span class="json-punct">${escaped}</span>`)
+      } else if (isKey) {
+        parts.push(`<span class="json-key">${escaped}</span>`)
+      } else if (token.type === 'string') {
+        parts.push(`<span class="json-string">${escaped}</span>`)
+      } else {
+        parts.push(`<span class="json-value">${escaped}</span>`)
+      }
     }
 
-    // Escape regex special characters in search term
-    const escapedSearch = this.searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    const searchRegex = new RegExp(`(${escapedSearch})`, 'gi')
+    // Join with word break opportunities between tokens
+    let result = parts.join('<wbr>')
 
-    // Apply search highlighting, being careful not to match inside HTML tags
-    const withHighlight = withKeys.replace(
-      /(<[^>]*>)|([^<]+)/g,
-      (match, tag, text) => {
-        if (tag) return tag // Don't modify HTML tags
-        return text.replace(searchRegex, '<span class="search-highlight">$1</span>')
-      }
-    )
+    // Highlight search terms if present
+    if (this.searchTerm) {
+      const escapedSearch = this.searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const searchRegex = new RegExp(`(${escapedSearch})`, 'gi')
 
-    return unsafeHTML(withHighlight)
+      result = result.replace(
+        /(<[^>]*>)|([^<]+)/g,
+        (match, tag, text) => {
+          if (tag) return tag
+          return text.replace(searchRegex, '<span class="search-highlight">$1</span>')
+        }
+      )
+    }
+
+    return unsafeHTML(result)
   }
 
   render() {
