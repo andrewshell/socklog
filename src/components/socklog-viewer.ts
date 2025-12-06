@@ -56,6 +56,11 @@ export class SocklogViewer extends LitElement {
       white-space: pre-wrap;
     }
 
+    .json.expanded {
+      white-space: pre;
+      overflow-x: auto;
+    }
+
     .empty-state {
       padding: var(--socklog-padding, 8px);
       color: var(--socklog-muted-color, #999);
@@ -272,8 +277,8 @@ export class SocklogViewer extends LitElement {
       }
     }
 
-    // Join with word break opportunities between tokens
-    let result = parts.join('<wbr>')
+    // Join with word break opportunities between tokens (only when collapsed)
+    let result = expanded ? parts.join('') : parts.join('<wbr>')
 
     // Highlight search terms if present
     if (this.searchTerm) {
@@ -319,7 +324,7 @@ export class SocklogViewer extends LitElement {
                 </span>
                 <span class="timestamp">${this.formatTimestamp(entry.timestamp)}</span>
               </div>
-              <div class="json">${this.formatJson(entry.data, this.expandedIds.has(entry.id))}</div>
+              <div class="json ${this.expandedIds.has(entry.id) ? 'expanded' : ''}">${this.formatJson(entry.data, this.expandedIds.has(entry.id))}</div>
             </div>
           `
         )}
