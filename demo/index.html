@@ -53,6 +53,17 @@
     </style>
   </head>
   <body>
+    <script type="module">
+      // import 'https://esm.sh/@andrewshell/socklog'
+      import '../src/index.ts'
+
+      const viewer = document.getElementById('viewer')
+      const controls = document.getElementById('controls')
+
+      // Connect controls to viewer's store
+      controls.store = viewer.getStore()
+    </script>
+    
     <div class="demo-container">
       <h1>socklog Demo</h1>
 
@@ -68,15 +79,5 @@
         <socklog-viewer id="viewer" url="ws://localhost:8080"></socklog-viewer>
       </div>
     </div>
-
-    <script type="module">
-      import '../src/index.ts'
-
-      const viewer = document.getElementById('viewer')
-      const controls = document.getElementById('controls')
-
-      // Connect controls to viewer's store
-      controls.store = viewer.getStore()
-    </script>
   </body>
 </html>
