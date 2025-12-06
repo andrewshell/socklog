@@ -26,10 +26,30 @@ export class SocklogViewer extends LitElement {
       border-bottom: 1px solid var(--socklog-border-color, #e0e0e0);
     }
 
+    .log-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .log-header {
+      cursor: pointer;
+    }
+
+    .log-header:hover .expand-toggle {
+      color: var(--socklog-toggle-hover-color, #333);
+    }
+
+    .expand-toggle {
+      user-select: none;
+      color: var(--socklog-toggle-color, #666);
+      font-size: 10px;
+    }
+
     .timestamp {
       color: var(--socklog-timestamp-color, #666);
       font-size: 11px;
-      margin-bottom: 2px;
     }
 
     .json {
@@ -57,6 +77,9 @@ export class SocklogViewer extends LitElement {
   @property({ type: Number })
   maxLogs = 1000
 
+  @property({ type: Number })
+  indent = 4
+
   @state()
   private logs: LogEntry[] = []
 
@@ -65,6 +88,9 @@ export class SocklogViewer extends LitElement {
 
   @state()
   private searchTerm = ''
+
+  @state()
+  private expandedIds = new Set<string>()
 
   private client: WebSocketClient | null = null
   private store: LogStore | null = null
@@ -123,6 +149,15 @@ export class SocklogViewer extends LitElement {
     return this.store
   }
 
+  private toggleExpanded(id: string) {
+    if (this.expandedIds.has(id)) {
+      this.expandedIds.delete(id)
+    } else {
+      this.expandedIds.add(id)
+    }
+    this.expandedIds = new Set(this.expandedIds)
+  }
+
   private formatTimestamp(date: Date): string {
     return date.toLocaleTimeString('en-US', {
       hour12: false,
@@ -133,12 +168,12 @@ export class SocklogViewer extends LitElement {
     })
   }
 
-  private formatJson(data: unknown) {
+  private formatJson(data: unknown, expanded = false) {
     let jsonStr: string
     if (typeof data === 'string') {
       jsonStr = data
     } else {
-      jsonStr = JSON.stringify(data)
+      jsonStr = expanded ? JSON.stringify(data, null, this.indent) : JSON.stringify(data)
     }
 
     // Escape HTML entities first
@@ -194,8 +229,14 @@ export class SocklogViewer extends LitElement {
         ${this.logs.map(
           (entry) => html`
             <div class="log-entry">
-              <div class="timestamp">${this.formatTimestamp(entry.timestamp)}</div>
-              <div class="json">${this.formatJson(entry.data)}</div>
+              <div class="log-header"
+                   @click=${() => this.toggleExpanded(entry.id)}>
+                <span class="expand-toggle">
+                  ${this.expandedIds.has(entry.id) ? '⏷' : '⏵'}
+                </span>
+                <span class="timestamp">${this.formatTimestamp(entry.timestamp)}</span>
+              </div>
+              <div class="json">${this.formatJson(entry.data, this.expandedIds.has(entry.id))}</div>
             </div>
           `
         )}
