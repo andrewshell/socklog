@@ -39,6 +39,16 @@ export class WebSocketClient extends EventTarget {
   connect(): void {
     if (this.ws?.readyState === WebSocket.OPEN) return
 
+    if (
+      typeof location !== 'undefined' &&
+      location.protocol === 'https:' &&
+      this.config.url.startsWith('ws://')
+    ) {
+      console.warn(
+        '[socklog] Connecting with ws:// from an HTTPS page will be blocked as mixed content. Use wss:// instead.'
+      )
+    }
+
     this._status = 'connecting'
     this.dispatchEvent(new CustomEvent('statuschange', { detail: this._status }))
 
