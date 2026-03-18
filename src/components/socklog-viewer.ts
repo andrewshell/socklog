@@ -199,7 +199,14 @@ export class SocklogViewer extends LitElement {
       }
 
       // Structural characters
-      if (char === '{' || char === '}' || char === '[' || char === ']' || char === ':' || char === ',') {
+      if (
+        char === '{' ||
+        char === '}' ||
+        char === '[' ||
+        char === ']' ||
+        char === ':' ||
+        char === ','
+      ) {
         tokens.push({ type: 'punctuation', value: char })
         i++
         continue
@@ -256,10 +263,7 @@ export class SocklogViewer extends LitElement {
       const nextToken = tokens[i + 1]
 
       // Escape HTML entities
-      const escaped = token.value
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
+      const escaped = token.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
       // Check if this string is a key (followed by colon)
       const isKey = token.type === 'string' && nextToken?.value === ':'
@@ -285,13 +289,10 @@ export class SocklogViewer extends LitElement {
       const escapedSearch = this.searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       const searchRegex = new RegExp(`(${escapedSearch})`, 'gi')
 
-      result = result.replace(
-        /(<[^>]*>)|([^<]+)/g,
-        (match, tag, text) => {
-          if (tag) return tag
-          return text.replace(searchRegex, '<span class="search-highlight">$1</span>')
-        }
-      )
+      result = result.replace(/(<[^>]*>)|([^<]+)/g, (match, tag, text) => {
+        if (tag) return tag
+        return text.replace(searchRegex, '<span class="search-highlight">$1</span>')
+      })
     }
 
     return unsafeHTML(result)
@@ -317,14 +318,13 @@ export class SocklogViewer extends LitElement {
         ${this.logs.map(
           (entry) => html`
             <div class="log-entry">
-              <div class="log-header"
-                   @click=${() => this.toggleExpanded(entry.id)}>
-                <span class="expand-toggle">
-                  ${this.expandedIds.has(entry.id) ? '⏷' : '⏵'}
-                </span>
+              <div class="log-header" @click=${() => this.toggleExpanded(entry.id)}>
+                <span class="expand-toggle"> ${this.expandedIds.has(entry.id) ? '⏷' : '⏵'} </span>
                 <span class="timestamp">${this.formatTimestamp(entry.timestamp)}</span>
               </div>
-              <div class="json ${this.expandedIds.has(entry.id) ? 'expanded' : ''}">${this.formatJson(entry.data, this.expandedIds.has(entry.id))}</div>
+              <div class="json ${this.expandedIds.has(entry.id) ? 'expanded' : ''}">
+                ${this.formatJson(entry.data, this.expandedIds.has(entry.id))}
+              </div>
             </div>
           `
         )}

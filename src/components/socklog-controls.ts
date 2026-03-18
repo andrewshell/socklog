@@ -20,7 +20,14 @@ export class SocklogControls extends LitElement {
       padding: 8px 12px;
       background: var(--socklog-controls-bg, inherit);
       border-bottom: 1px solid var(--socklog-border-color, #e0e0e0);
-      font-family: var(--socklog-ui-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+      font-family: var(
+        --socklog-ui-font-family,
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        Roboto,
+        sans-serif
+      );
       font-size: 13px;
       color: var(--socklog-color, inherit);
       box-sizing: border-box;
@@ -148,7 +155,10 @@ export class SocklogControls extends LitElement {
         </div>
 
         <div class="actions">
-          <button class="action-btn pause ${this.paused ? 'active' : ''}" @click=${this.togglePause}>
+          <button
+            class="action-btn pause ${this.paused ? 'active' : ''}"
+            @click=${this.togglePause}
+          >
             ${this.paused ? 'Resume' : 'Pause'}
           </button>
           <button class="action-btn" @click=${this.clear}>Clear</button>
