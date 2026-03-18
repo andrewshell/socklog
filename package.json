@@ -1,6 +1,6 @@
 {
   "name": "@andrewshell/socklog",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "WebSocket-based logging web components using Lit",
   "type": "module",
   "main": "./dist/socklog.cjs",

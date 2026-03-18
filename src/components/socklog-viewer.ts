@@ -322,9 +322,7 @@ export class SocklogViewer extends LitElement {
                 <span class="expand-toggle"> ${this.expandedIds.has(entry.id) ? '⏷' : '⏵'} </span>
                 <span class="timestamp">${this.formatTimestamp(entry.timestamp)}</span>
               </div>
-              <div class="json ${this.expandedIds.has(entry.id) ? 'expanded' : ''}">
-                ${this.formatJson(entry.data, this.expandedIds.has(entry.id))}
-              </div>
+              <div class="json ${this.expandedIds.has(entry.id) ? 'expanded' : ''}">${this.formatJson(entry.data, this.expandedIds.has(entry.id))}</div>
             </div>
           `
         )}
