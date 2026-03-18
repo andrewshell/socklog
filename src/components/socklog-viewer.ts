@@ -228,7 +228,7 @@ export class SocklogViewer extends LitElement {
 
       // Number, boolean, null
       let value = ''
-      while (i < json.length && !/[\s{}\[\]:,"]/.test(json[i])) {
+      while (i < json.length && !/[\s{}[\]:,"]/.test(json[i])) {
         value += json[i]
         i++
       }
