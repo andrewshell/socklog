@@ -161,6 +161,10 @@ export class SocklogViewer extends LitElement {
     return this.store
   }
 
+  getClient(): WebSocketClient | null {
+    return this.client
+  }
+
   private toggleExpanded(id: string) {
     if (this.expandedIds.has(id)) {
       this.expandedIds.delete(id)

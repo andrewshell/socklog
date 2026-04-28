@@ -65,6 +65,31 @@ npm install @andrewshell/socklog
 </div>
 ```
 
+### With Sender (Two-Way Messaging)
+
+The `<socklog-sender>` component shares the viewer's WebSocket connection so messages
+can be sent without opening a second socket.
+
+```html
+<script type="module">
+  import 'https://esm.sh/@andrewshell/socklog'
+
+  const viewer = document.getElementById('viewer')
+  const controls = document.getElementById('controls')
+  const sender = document.getElementById('sender')
+
+  controls.store = viewer.getStore()
+  // Reuse the viewer's WebSocket connection
+  sender.client = viewer.getClient()
+</script>
+
+<div style="display: flex; flex-direction: column; height: 400px;">
+  <socklog-sender id="sender"></socklog-sender>
+  <socklog-controls id="controls"></socklog-controls>
+  <socklog-viewer id="viewer" url="ws://localhost:8080/logs"></socklog-viewer>
+</div>
+```
+
 ## Components
 
 ### `<socklog-viewer>`
@@ -80,11 +105,12 @@ Main log display component with WebSocket connection and virtualized scrolling.
 
 **Methods:**
 
-| Method       | Returns    | Description                  |
-| ------------ | ---------- | ---------------------------- |
-| `connect()`  | `void`     | Connect to the WebSocket     |
-| `clear()`    | `void`     | Clear all logs               |
-| `getStore()` | `LogStore` | Get the underlying log store |
+| Method        | Returns           | Description                         |
+| ------------- | ----------------- | ----------------------------------- |
+| `connect()`   | `void`            | Connect to the WebSocket            |
+| `clear()`     | `void`            | Clear all logs                      |
+| `getStore()`  | `LogStore`        | Get the underlying log store        |
+| `getClient()` | `WebSocketClient` | Get the underlying WebSocket client |
 
 ### `<socklog-controls>`
 
@@ -95,6 +121,18 @@ Filter, search, and pause controls for the log viewer.
 | Property | Type       | Description                   |
 | -------- | ---------- | ----------------------------- |
 | `store`  | `LogStore` | Log store instance to control |
+
+### `<socklog-sender>`
+
+Textarea + Send button that publishes messages over the viewer's existing WebSocket
+connection. Send via the button or `Cmd`/`Ctrl`+`Enter`. The button is disabled when
+the connection is not open or the textarea is empty.
+
+**Properties:**
+
+| Property | Type              | Description                                     |
+| -------- | ----------------- | ----------------------------------------------- |
+| `client` | `WebSocketClient` | WebSocket client instance to send messages over |
 
 ## Styling
 
@@ -154,6 +192,9 @@ client.addEventListener('log', (e) => {
 })
 
 client.connect()
+
+// Send a message over the same connection
+client.send('hello server')
 ```
 
 ## Types

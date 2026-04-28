@@ -1,6 +1,7 @@
 // Components
 export { SocklogViewer } from './components/socklog-viewer'
 export { SocklogControls } from './components/socklog-controls'
+export { SocklogSender } from './components/socklog-sender'
 
 // Core
 export { WebSocketClient } from './core/websocket-client'

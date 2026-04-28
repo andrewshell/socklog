@@ -59,11 +59,14 @@
 
       const viewer = document.getElementById('viewer')
       const controls = document.getElementById('controls')
+      const sender = document.getElementById('sender')
 
       // Connect controls to viewer's store
       controls.store = viewer.getStore()
+      // Share viewer's WebSocket connection with the sender
+      sender.client = viewer.getClient()
     </script>
-    
+
     <div class="demo-container">
       <h1>socklog Demo</h1>
 
@@ -75,6 +78,7 @@
       </div>
 
       <div class="log-panel">
+        <socklog-sender id="sender"></socklog-sender>
         <socklog-controls id="controls"></socklog-controls>
         <socklog-viewer id="viewer" url="ws://localhost:8080"></socklog-viewer>
       </div>

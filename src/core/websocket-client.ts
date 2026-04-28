@@ -66,6 +66,12 @@ export class WebSocketClient extends EventTarget {
     this.ws?.close()
   }
 
+  send(data: string): void {
+    if (this.ws?.readyState === WebSocket.OPEN) {
+      this.ws.send(data)
+    }
+  }
+
   private setupEventHandlers(): void {
     if (!this.ws) return
 

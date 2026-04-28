@@ -37,6 +37,14 @@ wss.on('connection', (ws) => {
     }
   }, INTERVAL_MS)
 
+  ws.on('message', (data) => {
+    const text = data.toString()
+    console.log('Received from client:', text)
+    for (const peer of wss.clients) {
+      if (peer.readyState === peer.OPEN) peer.send(text)
+    }
+  })
+
   ws.on('close', () => {
     console.log('Client disconnected')
     clearInterval(interval)
