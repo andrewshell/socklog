@@ -33,7 +33,12 @@ describe('<socklog-viewer>', () => {
   it('renders an entry after a log is added to the store', async () => {
     const { el, cleanup } = await mountElement<SocklogViewer>('socklog-viewer')
     const store = el.getStore()!
-    store.add({ id: '1', timestamp: new Date(), data: { hello: 'world' }, raw: '{"hello":"world"}' })
+    store.add({
+      id: '1',
+      timestamp: new Date(),
+      data: { hello: 'world' },
+      raw: '{"hello":"world"}'
+    })
     await el.updateComplete
 
     const entries = el.shadowRoot?.querySelectorAll('.log-entry')

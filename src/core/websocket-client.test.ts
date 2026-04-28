@@ -77,7 +77,8 @@ describe('WebSocketClient', () => {
     })
 
     const log = await new Promise<LogEntry>((resolve) => {
-      client.addEventListener('log', ((e: CustomEvent<LogEntry>) => resolve(e.detail)) as EventListener)
+      client.addEventListener('log', ((e: CustomEvent<LogEntry>) =>
+        resolve(e.detail)) as EventListener)
       client.connect()
     })
 
@@ -98,7 +99,8 @@ describe('WebSocketClient', () => {
     })
 
     const log = await new Promise<LogEntry>((resolve) => {
-      client.addEventListener('log', ((e: CustomEvent<LogEntry>) => resolve(e.detail)) as EventListener)
+      client.addEventListener('log', ((e: CustomEvent<LogEntry>) =>
+        resolve(e.detail)) as EventListener)
       client.connect()
     })
 
