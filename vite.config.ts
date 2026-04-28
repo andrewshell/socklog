@@ -1,4 +1,5 @@
-import { defineConfig } from 'vite'
+/// <reference types="vitest" />
+import { defineConfig } from 'vitest/config'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -27,5 +28,15 @@ export default defineConfig({
   },
   server: {
     open: '/demo/index.html'
+  },
+  test: {
+    environment: 'happy-dom',
+    include: ['src/**/*.{test,spec}.ts'],
+    setupFiles: ['./src/test/setup.ts'],
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.ts'],
+      exclude: ['src/**/*.{test,spec}.ts', 'src/test/**', 'src/index.ts']
+    }
   }
 })
