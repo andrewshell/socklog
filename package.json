@@ -5,7 +5,7 @@
   "type": "module",
   "engines": {
     "node": ">=24",
-    "pnpm": ">=9"
+    "pnpm": ">=10"
   },
   "main": "./dist/socklog.cjs",
   "module": "./dist/socklog.js",
