@@ -19,9 +19,26 @@
         padding: 24px;
       }
 
-      h1 {
+      .header {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        flex-wrap: wrap;
         margin-bottom: 16px;
+      }
+
+      h1 {
         font-weight: 500;
+      }
+
+      .header a {
+        font-size: 14px;
+        color: #4a90e2;
+        text-decoration: none;
+      }
+
+      .header a:hover {
+        text-decoration: underline;
       }
 
       .demo-container {
@@ -138,7 +155,12 @@
     </script>
 
     <div class="demo-container">
-      <h1>socklog</h1>
+      <div class="header">
+        <h1>socklog</h1>
+        <a href="https://github.com/andrewshell/socklog" target="_blank" rel="noopener noreferrer"
+          >Learn more about this project…</a
+        >
+      </div>
 
       <div class="connect-form">
         <input type="text" id="ws-url" placeholder="ws://localhost:8080" autocomplete="off" />

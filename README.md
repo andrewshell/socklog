@@ -2,6 +2,8 @@
 
 WebSocket-based logging web components built with [Lit](https://lit.dev/).
 
+[View a demo](https://socklog.geekity.com/)
+
 ## Installation
 
 ### npm
